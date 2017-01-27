@@ -1,5 +1,5 @@
 # FI-MUNI-PV226 Music Library
-The school project for .NET/C# seminar
+The school project for C#/.NET seminar
 
 ##Team member:
 * [Silvia Borzová] (https://github.com/sborzova) (433320)
