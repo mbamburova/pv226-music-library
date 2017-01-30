@@ -1,0 +1,89 @@
+﻿@using BL.Utils.AccountPolicy
+@model PL.Models.SongListViewModel
+
+@{
+    ViewBag.Title = "DB of songs";
+}
+
+<h2>DATABASE</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="col-lg-4 pull-right">
+        <div class="input-group">
+            <span class="input-group-btn">
+                @Html.EditorFor(model => model.SongFilter.Name, new {htmlAttributes = new {@class = "form-control"}})
+                <input type="submit" value="Search" class="btn"><i class="icon-search"></i>
+            </span>
+        </div>
+    </div>
+}
+
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>NAME</th>
+        <th>ALBUM</th>
+        <th>INTERPRET</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Songs)
+    {
+        <tr>
+            <td>
+                @if (User.IsInRole(Claims.User))
+                {
+                    if (Model.UserSongs.Any(userSong => userSong.ID.Equals(item.ID)))
+                    {
+                        <button type="button" class="btn btn-success btn-xs" data-toggle="tooltip" data-placement="left" data-html="true" title="Remove from your songs"
+                                onclick="location.href = '@Url.Action("RemoveFromCollection", "SongCollection", new {id = item.ID})'">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-warning btn-xs" data-toggle="tooltip" data-placement="left" data-html="true" title="Add to your songs"
+                                onclick="location.href = '@Url.Action("AddToCollection", "SongCollection", new {id = item.ID})'">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        </button>
+                    }
+                }
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+
+            @foreach (var album in Model.Albums.Where(album => item.AlbumId.Equals(album.ID)))
+            {
+                <td>
+                    @Html.ActionLink(@Html.DisplayFor(modelItem => album.Name).ToString(), "ListSongsByAlbum", new {id = album.ID})
+                </td>
+                foreach (var interpret in Model.Interprets.Where(interpret => album.InterpretId.Equals(interpret.ID)))
+                {
+                    <td>
+                        <a href="@Url.Action("Details", "Interprets", new {id = interpret.ID})">@interpret.Name</a>
+                    </td>
+                }
+            }
+            <td>
+                <div class="btn-group">
+                    <input type="button" class="btn btn-info btn-sm .dropdown-toggle" value="Song details" onclick="location.href = '@Url.Action("Details", "Song", new {id = item.ID})'"/>
+                    @if (User.IsInRole(Claims.Admin))
+                    {
+                        <input type="button" class="btn btn-warning btn-sm" value="Edit" onclick="location.href = '@Url.Action("Edit", "Song", new {id = item.ID})'"/>
+                    }
+                    @if (User.IsInRole(Claims.Admin))
+                    {
+                        <input type="button" class="btn btn-danger btn-sm" value="Delete" onclick="location.href = '@Url.Action("Delete", "Song", new {id = item.ID})'"/>
+                    }
+                </div>
+            </td>
+            <td>
+                <audio controls>
+                    <source src="@item.SongPath" type="audio/mp3"/>
+                </audio>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

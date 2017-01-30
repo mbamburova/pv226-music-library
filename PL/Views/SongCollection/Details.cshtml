@@ -1,0 +1,52 @@
+﻿@model PL.Models.PlaylistModel
+
+@{
+    ViewBag.Title = Model.Playlist.Name;
+}
+<br/>
+<h3>
+    <strong>Playlist:</strong> @Html.DisplayFor(model => Model.Playlist.Name)
+    <button type="button" class="btn btn-primary btn-sm" onclick="location.href = '@Url.Action("Shuffle", "SongCollection", new {id = Model.Playlist.ID})'">
+        <span class="glyphicon glyphicon-random">  </span>  Shuffle
+    </button>
+</h3>
+<h4>Created at: @Html.DisplayFor(model => Model.Playlist.Created)</h4>
+<br/>
+
+<table class="table table-hover">
+    <tr>
+        <th>NAME</th>
+        <th>ALBUM</th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.Songs)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+
+            @foreach (var album in Model.Albums.Where(album => item.AlbumId.Equals(album.ID)))
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => album.Name)
+                </td>
+            }
+            <td>
+                <audio controls>
+                    <source src="@item.SongPath" type="audio/mp3"/>
+                </audio>
+            </td>
+            <td>
+                <input type="button" class="btn btn-danger btn-sm" value="Delete"
+                       onclick="location.href = '@Url.Action("RemoveFromPlaylist", "SongCollection", new {playlistId = Model.Playlist.ID, songId = item.ID})'"/>
+            </td>
+        </tr>
+    }
+
+</table>
+
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>

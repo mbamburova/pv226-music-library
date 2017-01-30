@@ -1,0 +1,50 @@
+﻿@using BL.Utils.AccountPolicy
+@model PL.Models.EventsViewModel
+
+@{
+    ViewBag.Title = "Events";
+}
+
+<h2>Upcoming music events</h2>
+
+@if (User.IsInRole(Claims.Admin))
+{
+    <div>
+        <button type="button" class="btn btn-success btn-sm" onclick="location.href = '@Url.Action("Create", "Events")'">
+            <span class="glyphicon glyphicon-plus"></span> Add event
+        </button>
+    </div>
+}
+<br/>
+
+@foreach (var item in Model.Events)
+{
+    <div style="margin: 20px 30px 50px 30px">
+        <h4>@Html.DisplayFor(modelItem => item.Name)</h4>
+
+        <p>
+            <strong>@Html.DisplayNameFor(modelItem => item.Interpret.Name): </strong><em>@Html.DisplayFor(modelItem => item.Interpret.Name)</em>
+        </p>
+        <p>
+            <strong>@Html.DisplayNameFor(modelItem => item.Place): </strong><em>@Html.DisplayFor(modelItem => item.Place)</em>
+        </p>
+        <p>
+            <strong>@Html.DisplayNameFor(modelItem => item.Time): </strong><em>@Html.DisplayFor(modelItem => item.Time)</em>
+        </p>
+        @if (item.EventLink != null)
+        {
+            <p>
+                <strong>@Html.DisplayNameFor(modelItem => item.EventLink): </strong><em>
+                    <a href="@Html.DisplayFor(modelItem => item.EventLink)">@Html.DisplayFor(modelItem => item.EventLink)</a>
+                </em>
+            </p>
+        }
+        @if (User.IsInRole(Claims.Admin))
+        {
+            <div class="btn-group">
+                <input type="button" class="btn btn-warning btn-sm" value="Edit" onclick="location.href = '@Url.Action("Edit", "Events", new {id = item.ID})'"/>
+                <input type="button" class="btn btn-danger btn-sm" value="Delete" onclick="location.href = '@Url.Action("Delete", "Events", new {id = item.ID})'"/>
+            </div>
+        }
+    </div>
+}

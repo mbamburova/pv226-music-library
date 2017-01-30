@@ -1,0 +1,119 @@
+﻿@using BL.Utils.AccountPolicy
+@model PL.Models.SongListViewModel
+
+@{
+    ViewBag.Title = "Album";
+}
+
+<h2>Interpret: @Html.DisplayFor(name => Model.Interpret.Name)</h2>
+
+<h3>Album: @Html.DisplayFor(name => Model.Album.Name)</h3>
+@if (Model.Album.Year != 0)
+{
+    <h4>@Html.DisplayFor(model => model.Album.Year)</h4>
+}
+
+@if (User.IsInRole(Claims.Admin) || User.IsInRole(Claims.User))
+{
+    <p style="margin-top: 20px">
+        <button type="button" class="btn btn-success btn-sm" onclick="location.href = '@Url.Action("Create", "Song", new {id = Model.Album.ID})'">
+            <span class="glyphicon glyphicon-plus"></span> Add song
+        </button>
+    </p>
+}
+
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Added</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Songs)
+    {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+            <td>@Html.DisplayFor(modelItem => item.Added)</td>
+            <td>
+                <audio controls>
+                    <source src="@item.SongPath" type="audio/mp3"/>
+                </audio>
+            </td>
+            <td>
+                <div class="btn-group">
+                    <input type="button" class="btn btn-info btn-sm .dropdown-toggle" value="Details" onclick="location.href = '@Url.Action("Details", "Song", new {id = item.ID})'"/>
+                    @if (User.IsInRole(Claims.Admin) || User.IsInRole(Claims.User))
+                    {
+                        <input type="button" class="btn btn-warning btn-sm" value="Edit" onclick="location.href = '@Url.Action("Edit", "Song", new {id = item.ID})'"/>
+                    }
+                    @if (User.IsInRole(Claims.Admin))
+                    {
+                        <input type="button" class="btn btn-danger btn-sm" value="Delete" onclick="location.href = '@Url.Action("Delete", "Song", new {id = item.ID})'"/>
+                    }
+                </div>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+
+<h3>
+    Reviews
+    @if (User.IsInRole(Claims.Admin) || User.IsInRole(Claims.User))
+    {
+        <button type="button" class="btn btn-success btn-sm" onclick="location.href = '@Url.Action("CreateAlbumReview", "Song", new {id = Model.Album.ID})'">
+            <span class="glyphicon glyphicon-plus"></span> Add review
+        </button>
+    }
+</h3>
+
+
+@if (Model.AlbumReviews.Count.Equals(0))
+{
+    <em>There are no reviews</em>
+}
+else
+{
+    <div class="top-buffer-large">
+        <h4 class="row col-md-12">User reviews:</h4>
+        @{
+            foreach (var review in Model.AlbumReviews)
+            {
+                <div class="col-md-12 top-buffer-small  list-group-item-nonclickable">
+                    @if (review.Rating >= 8.0)
+                    {
+                        <h4><strong class="text-success">@review.Rating</strong> / 10</h4>
+                    }
+                    else
+                    {
+                        if (review.Rating >= 5.0)
+                        {
+                            <h4><strong class="text-warning">@review.Rating</strong> / 10</h4>
+                        }
+                        else
+                        {
+                            <h4><strong class="text-danger">@review.Rating</strong> / 10</h4>
+                        }
+                    }
+                    @{
+                        if (!string.IsNullOrEmpty(review.Note))
+                        {
+                            <div class="row">
+                                <blockquote>
+                                    <p class="text col-sm-12">
+                                        <strong>@Html.DisplayFor(arg => review.Name)</strong>: <i>"@Html.DisplayFor(arg => review.Note)"</i>
+                                    </p>
+                                </blockquote>
+                            </div>
+                        }
+                    }
+                </div>
+            }
+        }
+    </div>
+}
+<p>
+    @Html.ActionLink("Back to public database", "Index")
+</p>

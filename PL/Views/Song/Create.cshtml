@@ -1,0 +1,77 @@
+﻿@using BL.Utils.AccountPolicy
+@model PL.Models.SongCreateModel
+
+@{
+    ViewBag.Title = "Create song";
+}
+
+<h3>Create new song</h3>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr/>
+        @Html.ValidationSummary(true, "", new {@class = "text-danger"})
+        <div class="form-group">
+            @Html.LabelFor(model => model.Song.Name, new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Song.Name, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.Song.Name, "", new {@class = "text-danger"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.InterpretId, new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                <div>
+                    @Html.DropDownListFor(model => model.InterpretId, Model.Interprets, "Select interpret...", new {@class = "form-control"})
+                    <a href="@Url.Action("Create", "Interprets")"> or create new</a>
+                </div>
+                @Html.ValidationMessageFor(model => model.Interprets, "", new {@class = "text-danger"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Song.YTLink, new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Song.YTLink, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.Song.YTLink, "", new {@class = "text-danger"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Song.Genre, new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EnumDropDownListFor(model => model.Song.Genre, new {@class = "form-control"})
+                @Html.ValidationMessageFor(model => model.Song.Genre, "", new {@class = "text-danger"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Song.SongPath, new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Song.SongPath, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.Song.SongPath, "", new {@class = "text-danger"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default"/>
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @if (User.IsInRole(Claims.Admin))
+    {
+        @Html.ActionLink("Back to songs management", "Index", "SongManagement")
+    }
+    else if (User.IsInRole(Claims.User))
+    {
+        @Html.ActionLink("Back to songs collection", "Index", "SongCollection")
+    }
+</div>

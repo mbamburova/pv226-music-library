@@ -1,0 +1,163 @@
+﻿@model PL.Models.CollectionModel
+
+@{
+    ViewBag.Title = "My collections";
+}
+
+<h2>All my songs</h2>
+<br/>
+
+<button type="button" class="btn btn-success btn-sm" onclick="location.href = '@Url.Action("Create", "Song")'">
+    <span class="glyphicon glyphicon-plus"></span> Add new song
+</button>
+<br/>
+<br/>
+@if (Model.IsAdded)
+{
+    <div class="alert alert-success">
+        Song <strong>@Html.DisplayFor(model => Model.Song.Name)</strong> was successfully added to playlist <strong>@Html.DisplayFor(model => Model.Playlist.Name)</strong>.
+    </div>
+}
+
+@if (Model.Songs.Count == 0)
+{
+    <br/>
+    <em>There are no songs.</em>
+}
+else
+{
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>NAME</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Songs)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-info btn-sm .dropdown-toggle" data-toggle="collapse" data-target="#@item.ID">Click for details</button>
+                        <input type="button" class="btn btn-warning btn-sm" value="Edit" onclick="location.href = '@Url.Action("Edit", "Song", new {id = item.ID})'"/>
+                        <input type="button" class="btn btn-danger btn-sm" value="Remove" onclick="location.href = '@Url.Action("RemoveFromCollection", "SongCollection", new {id = item.ID})'"/>
+                    </div>
+                    <div id="@item.ID" class="collapsing">
+                        <br/>
+                        @foreach (var album in Model.Albums.Where(album => item.AlbumId.Equals(album.ID)))
+                        {
+                            <p>
+                                <strong>@Html.DisplayNameFor(modelItem => album.Name): </strong><em>@Html.DisplayFor(modelItem => album.Name)</em>
+                            </p>
+                            foreach (var interpret in Model.Interprets.Where(interpret => album.InterpretId.Equals(interpret.ID)))
+                            {
+                                <p>
+                                    <strong>@Html.DisplayNameFor(modelItem => interpret.Name): </strong><em>@Html.DisplayFor(modelItem => interpret.Name)</em>
+                                </p>
+                            }
+                        }
+                        <p>
+                            <strong>@Html.DisplayNameFor(modelItem => item.Genre): </strong><em>@Html.DisplayFor(modelItem => item.Genre)</em>
+                        </p>
+                        <a href="@Url.Action("Details", "Song", new {id = item.ID})">More details</a>
+                    </div>
+                </td>
+                <td>
+                    <audio controls>
+                        <source src="@item.SongPath" type="audio/mp3"/>
+                    </audio>
+                </td>
+                <td>
+                    @if (item.IsPublic == false && item.Publish == false)
+                    {
+                        <input type="button" class="btn btn-default btn-sm" value="Make public" onclick="location.href = '@Url.Action("AskForPublication", "Song", new {id = item.ID})'"/>
+                    }
+                    else if (item.IsPublic == false && item.Publish)
+                    {
+                        <input type="button" class="btn btn-default btn-sm" value="Waiting for admin approval" onclick="location.href = '@Url.Action("AskForPublication", "Song", new {id = item.ID})'" disabled="disabled"/>
+                    }
+                    else
+                    {
+                        <input type="button" class="btn btn-default btn-sm" value="Public" disabled="disabled"/>
+                    }
+                </td>
+                <td>
+                    <div class="btn-group">
+                        @if (Model.Playlists.Count.Equals(1))
+                        {
+                            <button type="button" class="btn btn-primary btm-xs .dropdown-toggle" data-toggle="dropdown" disabled="disabled">
+                                Add to playlist <span class="caret"></span>
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-primary btm-xs .dropdown-toggle" data-toggle="dropdown">
+                                Add to playlist <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                @foreach (var playlist in Model.Playlists.Where(playlist => !playlist.Name.Equals("All my songs")))
+                                {
+                                    <li>
+                                        @Html.ActionLink(@Html.DisplayFor(model => playlist.Name).ToString(), "AddToPlaylist", new {playlistId = playlist.ID, songId = item.ID})
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+
+<br/>
+<br/>
+
+@if (Model.Playlists.Count == 1)
+{
+    <h4>There are no created playlist.</h4>
+    <p style="margin-top: 20px">
+        <button type="button" class="btn btn-success btn-sm" onclick="location.href = '@Url.Action("Create", "SongCollection")'">
+            <span class="glyphicon glyphicon-plus"></span> Add new
+        </button>
+    </p>
+}
+
+else
+{
+    <h4>Actual playlists:</h4>
+    <p style="margin-top: 20px">
+        <button type="button" class="btn btn-success btn-sm" onclick="location.href = '@Url.Action("Create", "SongCollection")'">
+            <span class="glyphicon glyphicon-plus"></span> Add new
+        </button>
+    </p>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th> </th>
+            <th> </th>
+            <th> </th>
+            <th> </th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Playlists.Where(item => !item.Name.Equals("All my songs")))
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <input type="button" class="btn btn-info btn-sm" value="Detail" onclick="location.href = '@Url.Action("Details", "SongCollection", new {id = item.ID})'"/>
+                        <input type="button" class="btn btn-danger btn-sm" value="Remove" onclick="location.href = '@Url.Action("Delete", "SongCollection", new {id = item.ID})'"/>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

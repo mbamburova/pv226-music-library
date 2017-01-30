@@ -1,0 +1,86 @@
+﻿@using BL.Utils.AccountPolicy
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+</head>
+<body>
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("Music Library", "Index", "Home", new {area = ""}, new {@class = "navbar-brand"})
+        </div>
+
+        <div class="navbar-collapse collapse">
+
+            <ul class="nav navbar-nav  navbar-left">
+                <li>@Html.ActionLink("Events", "Index", "Events")</li>
+                <li>@Html.ActionLink("Interprets", "Index", "Interprets")</li>
+                <li>@Html.ActionLink("Public database of songs", "Index", "Song")</li>
+
+                @if (User.IsInRole(Claims.Admin))
+                {
+                    <li>@Html.ActionLink("Songs Management", "Index", "SongManagement")</li>
+                }
+                else if (User.IsInRole(Claims.User))
+                {
+                    <li>@Html.ActionLink("My song collections", "Index", "SongCollection")</li>
+                }
+
+            </ul>
+            <ul class="nav navbar-nav  navbar-right">
+                s
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li class="dropdown pull-right">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-user grey"></span> @User.Identity.Name.Split('@')[0] <b class="caret grey"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="divider"></li>
+                            <li>@Html.ActionLink("Logout", "Logout", "Account")</li>
+                        </ul>
+                    </li>
+                }
+                else
+                {
+                    <li class="dropdown pull-right">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-user grey"></span><b class="caret grey"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="divider"></li>
+                            <li>@Html.ActionLink("Register", "Register", "Account")</li>
+                            <li class="divider"></li>
+                            <li>@Html.ActionLink("Log in", "Login", "Account")</li>
+                        </ul>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="container body-content">
+    @RenderBody()
+    <hr/>
+    <footer>
+        <p>&copy; @DateTime.Now.Year Michaela Bamburová & Silvia Borzová</p>
+    </footer>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+@RenderSection("scripts", false)
+</body>
+</html>

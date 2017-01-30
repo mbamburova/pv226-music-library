@@ -1,0 +1,123 @@
+﻿@using BL.Utils.AccountPolicy
+@model PL.Models.SongListViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+<div class="row">
+    <h2>Song details</h2>
+    <div class="col-sm-9">
+        <div class="row">
+            <div class="col-md-6 col-xs-12">
+                <hr/>
+                <h4>
+                    <dl class="dl-horizontal">
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Song.Name)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Song.Name)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Album.Name)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Album.Name)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Song.Added)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Song.Added)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Song.Genre)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Song.Genre)
+                        </dd>
+                    </dl>
+                </h4>
+            </div>
+
+            <div class="col-md-6 col-xs-12">
+                @if (Model.Song.YTLink != null)
+                {
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <iframe width="560" height="315" class="embed-responsive-item" src=@Html.DisplayFor(model => model.Song.YTLink) allowfullscreen></iframe>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<h3>
+    Reviews
+    @if (User.IsInRole(Claims.Admin) || User.IsInRole(Claims.User))
+    {
+        <button type="button" class="btn btn-success btn-sm" onclick="location.href = '@Url.Action("CreateSongReview", "Song", new {id = Model.Song.ID})'">
+            <span class="glyphicon glyphicon-plus"></span> Add review
+        </button>
+    }
+</h3>
+
+
+@if (Model.SongReviews.Count.Equals(0))
+{
+    <em>There are no reviews</em>
+}
+else
+{
+    <div class="top-buffer-large">
+        <h4 class="row col-md-12">User reviews:</h4>
+        @{
+            foreach (var review in Model.SongReviews)
+            {
+                <div class="col-md-12 top-buffer-small  list-group-item-nonclickable">
+
+                    @if (review.Rating >= 8.0)
+                    {
+                        <h4><strong class="text-success">@review.Rating</strong> / 10</h4>
+                    }
+                    else
+                    {
+                        if (review.Rating >= 5.0)
+                        {
+                            <h4><strong class="text-warning">@review.Rating</strong> / 10 </h4>
+                        }
+                        else
+                        {
+                            <h4><strong class="text-danger">@review.Rating</strong> / 10 </h4>
+                        }
+                    }
+
+                    @{
+                        if (!string.IsNullOrEmpty(review.Note))
+                        {
+                            <div class="row">
+                                <blockquote>
+                                    <p class="text col-sm-12">
+                                        <strong>@Html.DisplayFor(arg => review.Name)</strong>: <i>"@Html.DisplayFor(arg => review.Note)"</i>
+                                    </p>
+                                </blockquote>
+                            </div>
+                        }
+                    }
+                </div>
+            }
+        }
+    </div>
+}
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,156 @@
+﻿@model PL.Models.SongManagementModel
+
+@{
+    ViewBag.Title = "Songs Management";
+}
+<br/>
+<br/>
+
+<button type="button" class="btn btn-success btn-sm" onclick="location.href = '@Url.Action("Create", "Song")'">
+    <span class="glyphicon glyphicon-plus"></span> Add new song
+</button>
+
+<h2>Songs waiting for publication</h2>
+
+@if (Model.SongsForPublish.Count == 0)
+{
+    <em>There are no songs</em>
+}
+else
+{
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Name of song</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.SongsForPublish)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-info btn-sm .dropdown-toggle" data-toggle="collapse" data-target="#@item.ID">Click for details</button>
+                        <input type="button" class="btn btn-warning btn-sm" value="Publicate" onclick="location.href = '@Url.Action("Publish", "SongManagement", new {id = item.ID})'"/>
+                        <input type="button" class="btn btn-danger btn-sm" value="Cancel" onclick="location.href = '@Url.Action("Cancel", "SongManagement", new {id = item.ID})'"/>
+                    </div>
+                    <div id="@item.ID" class="collapsing">
+                        <br/>
+                        <p>
+                            <strong>@Html.DisplayNameFor(modelItem => item.Interpret): </strong><em>@Html.DisplayFor(modelItem => item.Interpret)</em>
+                        </p>
+                        <p>
+                            <strong>@Html.DisplayNameFor(modelItem => item.Album): </strong><em>@Html.DisplayFor(modelItem => item.Album)</em>
+                        </p>
+                        <p>
+                            <strong>@Html.DisplayNameFor(modelItem => item.Genre): </strong><em>@Html.DisplayFor(modelItem => item.Genre)</em>
+                        </p>
+                        <p>
+                            <strong>@Html.DisplayNameFor(modelItem => item.YTLink): </strong><em>
+                                <a href="@Html.DisplayFor(modelItem => item.YTLink)">@Html.DisplayFor(modelItem => item.YTLink)</a>
+                            </em>
+                        </p>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+<br/>
+
+<h2>Edited songs waiting for confirmation</h2>
+
+@if (Model.SongsEditedForConfirmation.Count == 0)
+{
+    <em>There are no songs</em>
+}
+else
+{
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Name of song</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var edited in Model.SongsEditedForConfirmation)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => edited.Name)
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-info btn-sm .dropdown-toggle" data-toggle="collapse" data-target="#@edited.ID">Click for details</button>
+                        <input type="button" class="btn btn-warning btn-sm" value="Confirm" onclick="location.href = '@Url.Action("Confirm", "SongManagement", new {id = edited.ID})'"/>
+                        <input type="button" class="btn btn-danger btn-sm" value="Cancel" onclick="location.href = '@Url.Action("CancelEditSong", "SongManagement", new {id = edited.ID})'"/>
+                    </div>
+                    <div id="@edited.ID" class="collapsing">
+                        <div class="row">
+                            <br/>
+                            <div class="col-md-4">
+                                <p>
+                                    <strong>SUGGESTED EDITED VERSION</strong>
+                                </p>
+                                <p>
+                                    <strong>@Html.DisplayNameFor(modelItem => edited.Name): </strong><em>@Html.DisplayFor(modelItem => edited.Name)</em>
+                                </p>
+                                <p>
+                                    <strong>@Html.DisplayNameFor(modelItem => edited.Interpret): </strong><em>@Html.DisplayFor(modelItem => edited.Interpret)</em>
+                                </p>
+                                <p>
+                                    <strong>@Html.DisplayNameFor(modelItem => edited.Album): </strong><em>@Html.DisplayFor(modelItem => edited.Album)</em>
+                                </p>
+                                <p>
+                                    <strong>@Html.DisplayNameFor(modelItem => edited.Genre): </strong><em>@Html.DisplayFor(modelItem => edited.Genre)</em>
+                                </p>
+                                <p>
+                                    <strong>@Html.DisplayNameFor(modelItem => edited.YTLink): </strong><em>
+                                        <a href="@Html.DisplayFor(modelItem => edited.YTLink)">@Html.DisplayFor(modelItem => edited.YTLink)</a>
+                                    </em>
+                                </p>
+                                <br/>
+                            </div>
+                            <div class="col-md-4">
+                                <p>
+                                    <strong>CURRENT VERSION</strong>
+                                </p>
+                                @foreach (var current in Model.SongsBeforeEdit)
+                                {
+                                    if (edited.OriginalSong.Equals(current.ID))
+                                    {
+                                        <p>
+                                            <strong>@Html.DisplayNameFor(modelItem => current.Name): </strong><em>@Html.DisplayFor(modelItem => current.Name)</em>
+                                        </p>
+                                        <p>
+                                            <strong>@Html.DisplayNameFor(modelItem => current.Interpret): </strong><em>@Html.DisplayFor(modelItem => current.Interpret)</em>
+                                        </p>
+                                        <p>
+                                            <strong>@Html.DisplayNameFor(modelItem => current.Album): </strong><em>@Html.DisplayFor(modelItem => current.Album)</em>
+                                        </p>
+                                        <p>
+                                            <strong>@Html.DisplayNameFor(modelItem => current.Genre): </strong><em>@Html.DisplayFor(modelItem => current.Genre)</em>
+                                        </p>
+                                        <p>
+                                            <strong>@Html.DisplayNameFor(modelItem => current.YTLink): </strong><em>
+                                                <a href="@Html.DisplayFor(modelItem => current.YTLink)">@Html.DisplayFor(modelItem => current.YTLink)</a>
+                                            </em>
+                                        </p>
+                                    }
+                                }
+                                <br/>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

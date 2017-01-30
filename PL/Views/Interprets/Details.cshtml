@@ -1,0 +1,75 @@
+﻿@using BL.Utils.AccountPolicy
+@model PL.Models.InterpretListViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+<br/>
+
+<div class="row">
+    <div class="col-sm-4">
+        <div class="container">
+            <div>
+                <img src="@Model.Interpret.InterpretImgUri" class="img-responsive col-sm-12" alt="">
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <h3>@Html.DisplayFor(model => model.Interpret.Name)</h3>
+        <hr/>
+        <strong>@Html.DisplayNameFor(model => model.Interpret.Language):</strong> @Html.DisplayFor(model => model.Interpret.Language)
+
+    </div>
+</div>
+<br/>
+
+@if (User.IsInRole(Claims.Admin) || User.IsInRole(Claims.User))
+{
+    <p style="margin-top: 20px">
+        <button type="button" class="btn btn-success btn-sm" onclick="location.href = '@Url.Action("CreateAlbum", "Interprets", new {id = Model.Interpret.ID})'">
+            <span class="glyphicon glyphicon-plus"></span> Add album
+        </button>
+    </p>
+}
+<br/>
+
+@if (Model.Albums.Count.Equals(0))
+{
+    <em>There are no albums</em>
+}
+else
+{
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Albums.GetEnumerator().Current.Name)</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Albums)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>
+                    <div class="btn-group">
+                        <input type="button" class="btn btn-info btn-sm" value="Details" onclick="location.href = '@Url.Action("ListSongsByAlbum", "Song", new {id = item.ID})'"/>
+                        @if (User.IsInRole(Claims.Admin))
+                        {
+                            <input type="button" class="btn btn-warning btn-sm" value="Edit" onclick="location.href = '@Url.Action("EditAlbum", "Interprets", new {id = item.ID})'"/>
+                            <input type="button" class="btn btn-danger btn-sm" value="Delete" onclick="location.href = '@Url.Action("DeleteAlbum", "Interprets", new {id = item.ID})'"/>
+                        }
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+<p>
+    @if (User.IsInRole(Claims.Admin) || User.IsInRole(Claims.User))
+    {
+        @Html.ActionLink("Edit", "Edit", new {id = Model.Interpret.ID})
+    }
+    @Html.ActionLink("Back to List", "Index")
+</p>
