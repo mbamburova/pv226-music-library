@@ -4,5 +4,4 @@ The school project for C#/.NET seminar
 ## Team member:
 * [Silvia Borzová](https://github.com/sborzova)
 
-### Link to github wiki project: 
-* [Project wiki](https://github.com/mbamburova/fi-muni-pv226-music-library/wiki)
+### More information (use cases, used technologies or screenshots) you can find on our [project wiki](https://github.com/mbamburova/fi-muni-pv226-music-library/wiki).
