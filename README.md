@@ -1,8 +1,8 @@
 # FI-MUNI-PV226 Music Library
 The school project for C#/.NET seminar
 
-##Team member:
-* [Silvia Borzová] (https://github.com/sborzova)
+## Team member:
+* [Silvia Borzová](https://github.com/sborzova)
 
-###Link to github wiki project: 
-* [Project wiki] (https://github.com/mbamburova/fi-muni-pv226-music-library/wiki)
+### Link to github wiki project: 
+* [Project wiki](https://github.com/mbamburova/fi-muni-pv226-music-library/wiki)
